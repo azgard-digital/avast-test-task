@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  php-7.4:
+    env_file:
+      - .env
+    build:
+      context: ./dockers/compose/php
+    volumes:
+      - ./xml:/var/www/xml
+      - ./:/var/www
+    environment:
+      XDEBUG_CONFIG: "${XDEBUG_CONFIG}"
+      PHP_IDE_CONFIG: "${PHP_IDE_CONFIG}"
+      COMPOSER_MEMORY_LIMIT: -1
+    ports:
+      - 9000:9000
+    networks:
+      - avast-network
+    command: bash -c "composer install && php-fpm"
+    container_name: php_test_avast
+  redis-6.0:
+    image: redis:6.0-alpine
+    ports:
+      - 6379:6379
+    networks:
+      - avast-network
+networks:
+  avast-network:
+    driver: bridge
